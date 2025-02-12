@@ -85,7 +85,7 @@ curl http://localhost:8080
 ```
 3. Створив контейнер з мережею none та з вказанням форварду портів 8080->80
 ```
-sudo docker run -d --name container2 --network host hw3_nginx
+sudo docker run -d --name container1 --network none -p 8080:80 hw3_nginx
 ```
 4. Перевірив що контейнер запустився проігнорувавши форвард портів
 ```
