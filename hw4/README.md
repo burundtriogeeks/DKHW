@@ -1,4 +1,4 @@
-# HW3 Bondaruk Victor
+# HW4 Bondaruk Victor
 
 1. Створив не оптимізований [Dockerfile](./v1/Dockerfile)
 2. Створив оптимізований [Dockerfile](./v2/Dockerfile)
