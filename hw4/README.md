@@ -72,7 +72,7 @@ REPOSITORY        TAG       IMAGE ID       CREATED          SIZE
 burund/hw4_node   v0.1      dadf63037922   21 minutes ago   334MB
 burund/hw4_node   v0.2      8817d864a8a7   23 minutes ago   333MB
 ```
-11. Додатково для прикладу оптимізації побудував 2 коонтейнери [v3](v3/Dockerfile) та [v4](v4/Dockerfile) з використанням alpine та різною кількістю шарів
+11. Додатково для прикладу оптимізації побудував 2 image [v3](v3/Dockerfile) та [v4](v4/Dockerfile) з використанням alpine та різною кількістю шарів
 ```
 REPOSITORY   TAG         IMAGE ID       CREATED          SIZE
 hw4_node     v0.4        75305a241add   11 seconds ago   211MB
