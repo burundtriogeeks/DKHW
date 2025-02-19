@@ -1,0 +1,55 @@
+version: "3.5"
+
+services:
+  grafana:
+    image: grafana/grafana
+    volumes:
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro
+    networks:
+      - my_bridge_network
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=${GF_SECURITY_ADMIN_PASSWORD}
+      - GF_DASHBOARD_DEFAULT_HOME_DASHBOARD_PATH=${GF_DASHBOARD_DEFAULT_HOME_DASHBOARD_PATH}
+      - GF_SERVER_ROOT_URL=${GF_SERVER_ROOT_URL}
+    depends_on:
+      - loki
+
+  loki:
+    image: grafana/loki:latest
+    ports:
+      - "3100:3100"
+    networks:
+      - my_bridge_network
+
+  fluentd:
+    build:
+      context: ./fluentd
+    ports:
+      - "24224:24224"
+      - "24224:24224/udp"
+    volumes:
+      - ./fluentd/fluentd.conf:/fluentd/etc/fluent.conf:ro
+    networks:
+      - my_bridge_network
+    depends_on:
+      - loki
+
+  worker:
+    image: nginx:stable-alpine
+    ports:
+      - "8080:80"
+    volumes:
+      - ./nginx/index.html:/usr/share/nginx/html/index.html:ro
+    logging:
+      driver: fluentd
+      options:
+        fluentd-address: localhost:24224
+        tag: log_worker.logs
+    depends_on:
+      - fluentd
+
+networks:
+  my_bridge_network:
+    driver: bridge
