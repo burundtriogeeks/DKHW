@@ -1,0 +1,19 @@
+apiVersion: apps/v1 #Версія апі до якого іде звернення
+kind: Deployment  #Тип апі до якого іде звернення
+metadata:
+  name: hw8-deployment #Назва деплойменту
+spec:
+  replicas: 3 #Кількість подів які будуть розгорнуті
+  selector:
+    matchLabels:
+      app: hw8-app #Селектор лейблів подів які підлягають під цей деплойймент
+  template: #Опис подів
+    metadata:
+      labels:
+        app: hw8-app #Лейбла поду, використовується для деплойменту і для сервісів
+    spec:
+      containers:
+        - name: hw8-container  #Назва поду
+          image: nginx:latest #Імедж який встановлюється в под
+          ports:
+            - containerPort: 80 #Порт який под слухає

@@ -1,0 +1,4 @@
+apiVersion: v1  #Версія апі до якого іде звернення
+kind: Namespace #Тип апі до якого іде звернення
+metadata:
+  name: hw8-namespace  #назва неймспейсу
