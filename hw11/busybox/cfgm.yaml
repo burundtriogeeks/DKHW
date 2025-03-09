@@ -1,0 +1,7 @@
+apiVersion: v1 #Версія апі до якого іде звернення
+kind: ConfigMap #Тип апі до якого іде звернення
+metadata:
+  name: busybox-config #Назва конфіг мапу
+  namespace: my-workers #Назва неймспейсу
+data: #Список у форматі ключ : значення
+  LOG_FILE: "/home/log/my_log.log"

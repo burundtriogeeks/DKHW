@@ -1,0 +1,38 @@
+apiVersion: apps/v1 #Версія апі до якого іде звернення
+kind: Deployment  #Тип апі до якого іде звернення
+metadata:
+  name: busybox-worker #Назва деплойменту
+  namespace: my-workers #Назва неймспейсу
+spec:
+  replicas: 3 #Кількість подів які будуть розгорнуті
+  selector:
+    matchLabels:
+      app: busybox-app #Селектор лейблів подів які підлягають під цей деплойймент
+  template: #Опис подів
+    metadata:
+      labels:
+        app: busybox-app #Лейбла поду, використовується для деплойменту і для сервісів
+    spec:
+      containers:
+        - name: busybox-container  #Назва поду
+          image: busybox #Імедж який встановлюється в под
+          command: ["/bin/sh"] #Команда котра буде виконана в контейнері
+          resources: #Вимоги до ресурсів
+            requests:
+              cpu: "250m" #Робимо запит на 0.25 CPU
+            limits:
+              cpu: "500m" #ставимо ліміт в 0.5 CPU
+          args: ["-c", "while true; do echo \"Message from $(hostname) at $(date)\" | tee -a $LOG_FILE; sleep 5; done"] #Аргументи до попередньої команди
+          volumeMounts:
+            - name: busybox-storage #Імя волума який підєднуємо. Розділ volumes далі
+              mountPath: /home/log/ #Шлях куди ми підєднуємо волум
+          env: #Імпортуємо потрібний ключ з конфіг мапи у змінні середовища
+            - name: LOG_FILE #Імя змінної середовища
+              valueFrom:
+                configMapKeyRef:
+                  name: busybox-config #Імя конфіг мап
+                  key: LOG_FILE #Імя ключа у конфіг мап
+      volumes: #Список волумів
+        - name: busybox-storage #Імя волума яке використовувалось при описі контейнеру
+          persistentVolumeClaim: #Тип або клейм або конфігмап
+            claimName: busybox-pvc #Імя клейму

@@ -1,0 +1,12 @@
+apiVersion: v1 #Версія апі до якого іде звернення
+kind: PersistentVolumeClaim #Тип апі до якого іде звернення
+metadata:
+  name: busybox-pvc #Назва pvc
+  namespace: my-workers #Назва неймспейсу
+spec:
+  accessModes:
+    - ReadWriteOnce #Може бути використаний для запису та читання на подах у рамках однієї ноди
+  resources:
+    requests:
+      storage: 1Gi #Розмір волума
+  storageClassName: microk8s-hostpath #Клас стореджу. У нашому вибадку збереження на хості

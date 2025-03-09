@@ -1,0 +1,13 @@
+apiVersion: v1 #Версія апі до якого іде звернення
+kind: PersistentVolume #Тип апі до якого іде звернення
+metadata:
+  name: busybox-pv #Назва pv
+spec:
+  capacity:
+    storage: 1Gi #Розмір волума
+  accessModes:
+    - ReadWriteOnce #Може бути використаний для запису та читання на подах у рамках однієї ноди
+  persistentVolumeReclaimPolicy: Retain #Вказуэ на те, що усі дані будуть збережені при видалені усіх клеймів
+  storageClassName: microk8s-hostpath #Клас стореджу. У нашому вибадку збереження на хості
+  hostPath:
+    path: "/mnt/data/busybox" #Фізична папка з волумом
