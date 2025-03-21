@@ -13,5 +13,5 @@
     }
 
     do {
-        md5(generateRandomString(64));
+        md5(generateRandomString(1024));
     } while(true);
