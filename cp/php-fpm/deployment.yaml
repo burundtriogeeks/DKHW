@@ -16,6 +16,11 @@ spec:
       containers:
         - name: php-fpm-container
           image: bitnami/php-fpm
+          resources:
+            requests:
+              cpu: "100m"
+            limits:
+              cpu: "500m"
           lifecycle:
             postStart:
               exec:
