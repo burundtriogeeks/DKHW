@@ -12,7 +12,6 @@
         return $randomString;
     }
 
-    $str = generateRandomString(1024*1024);
     do {
-        preg_match_all("/[abcd]/",$str);
+        md5(generateRandomString(64));
     } while(true);
