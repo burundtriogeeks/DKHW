@@ -12,6 +12,7 @@
         return $randomString;
     }
 
+    $str = generateRandomString(2048);
     do {
-        md5(generateRandomString(1024));
+        md5($str);
     } while(true);
