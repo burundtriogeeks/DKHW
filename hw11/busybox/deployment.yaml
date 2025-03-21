@@ -12,6 +12,10 @@ spec:
     metadata:
       labels:
         app: busybox-app #Лейбла поду, використовується для деплойменту і для сервісів
+      annotations: #Анотація для збору метрик прометеусом з подів
+          prometheus.io/scrape: "true"
+          prometheus.io/port: "80"
+          prometheus.io/path: "/metrics"
     spec:
       containers:
         - name: busybox-container  #Назва поду

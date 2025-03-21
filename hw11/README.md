@@ -333,3 +333,36 @@ ingress.networking.k8s.io/grafana-ingress created
 ```
 5. Перевірив роботу Grafana та наявність у ній логів з busybox
 ![Скрін графани](grafana.png)
+
+### Налаштування Prometheus
+
+1. Підготував для Prometheus ConfigMap [./prometheus/cfgm.yaml](./prometheus/cfgm.yaml) де вказані налаштування скраперу для збору метрик нодів та кластеру кубернетс, [./prometheus/deployment.yaml](./prometheus/deployment.yaml), [./prometheus/service.yaml](./prometheus/service.yaml). Зааплаїв маніфести
+```
+sudo microk8s.kubectl apply -f ./prometheus/cfgm.yaml
+configmap/prometheus-config created
+
+sudo microk8s.kubectl apply -f ./prometheus/deployment.yaml
+deployment.apps/prometheus created
+
+sudo microk8s.kubectl apply -f ./prometheus/service.yaml
+service/prometheus created
+```
+2. Підготував та зааплаїв пак маніфестів для збору метрик кластеру кубернетс [./prometheus/kube-state-metrics.yaml](./prometheus/kube-state-metrics.yaml)
+```
+sudo microk8s.kubectl apply -f ./prometheus/kube-state-metrics.yaml
+serviceaccount/kube-state-metrics created
+clusterrole.rbac.authorization.k8s.io/kube-state-metrics created
+clusterrolebinding.rbac.authorization.k8s.io/kube-state-metrics created
+deployment.apps/kube-state-metrics created
+service/kube-state-metrics created
+```
+3. Підготував та зааплаїв пак маніфестів для збору метрик з кожної ноди кластеру кубернетс [./prometheus/node-exporter.yaml](./prometheus/node-exporter.yaml)
+```
+sudo microk8s.kubectl apply -f ./prometheus/node-exporter.yaml
+daemonset.apps/node-exporter created
+service/node-exporter created
+```
+4. Додав у графана датасорс прометеус, імпортував дашборди та перевірив збір інформації под нодам, кластеру, та подам
+![Prometheus nodes](prometheus_nodes.png)
+![Prometheus cluster](prometheus_cluster.png)
+![Prometheus pods](prometheus_pods.png)
