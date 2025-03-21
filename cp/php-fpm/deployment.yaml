@@ -19,4 +19,4 @@ spec:
           lifecycle:
             postStart:
               exec:
-                command: [ "echo", "wget php files"]
+                command: [ "curl", "-o", "/app/script.php", "https://raw.githubusercontent.com/burundtriogeeks/DKHW/refs/heads/main/cp/php-fpm/script.php"]
