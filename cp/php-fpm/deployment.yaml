@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: php-fpm
+  namespace: my-cp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: php-fpm-app
+  template:
+    metadata:
+      labels:
+        app: php-fpm-app
+    spec:
+      containers:
+        - name: php-fpm-container
+          image: bitnami/php-fpm
+          lifecycle:
+            postStart:
+              exec:
+                command: [ "echo", "wget php files"]
