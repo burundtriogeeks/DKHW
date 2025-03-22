@@ -1,7 +1,29 @@
 <?php
 
-    var_dump($argv);
-    exit;
+    const _WORKERS_COUNT = 5;
+
+    $cmd = isset($argv,$argv[1])? $argv[1] : (isset($_GET["cmd"])? $_GET["cmd"] : "work" );
+    fwrite(STDOUT, date("[j M Y G:i:s]")." ".gethostname()." recived command ".$cmd."\n");
+
+    if ($cmd == "redines") {
+        $res = shell_exec("ps -ax | grep 'script.php wo'");
+        preg_match_all("/script.php.work/",$res,$res);
+        $res = count($res[0]);
+        if (!$res || $res < _WORKERS_COUNT) {
+            header("HTTP/1.0 404 Not Found");
+            echo "NOT ready\n";
+        } else {
+            echo "READY\n";
+        }
+        exit;
+    }
+
+    if ($cmd == "init") {
+        for($i = 1; $i <= _WORKERS_COUNT; $i++) {
+            shell_exec("php /app/script.php work ".($i*50)." > /dev/null 2>&1 &");
+        }
+        exit;
+    }
 
     function generateRandomString($length = 10) {
         $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -15,7 +37,10 @@
         return $randomString;
     }
 
-    do {
-        md5(generateRandomString(64));
-        usleep(100);
-    } while(true);
+    if ($cmd == "work") {
+        $speed = isset($argv,$argv[2])? $argv[2] : 100;
+        do {
+            md5(generateRandomString(64));
+            usleep($speed);
+        } while(true);
+    }

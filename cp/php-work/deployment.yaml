@@ -16,11 +16,13 @@ spec:
       containers:
         - name: php-work-container
           image: bitnami/php-fpm
+          ports:
+            - containerPort: 9000
           resources:
             requests:
               cpu: "100m"
             limits:
-              cpu: "500m"
+              cpu: "400m"
           lifecycle:
             postStart:
               exec:
