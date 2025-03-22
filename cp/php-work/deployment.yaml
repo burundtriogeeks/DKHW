@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: php-fpm
+  name: php-work
   namespace: my-cp
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: php-fpm-app
+      app: php-work-app
   template:
     metadata:
       labels:
-        app: php-fpm-app
+        app: php-work-app
     spec:
       containers:
-        - name: php-fpm-container
+        - name: php-work-container
           image: bitnami/php-fpm
           resources:
             requests:
@@ -24,4 +24,4 @@ spec:
           lifecycle:
             postStart:
               exec:
-                command: [ "curl", "-o", "/app/script.php", "https://raw.githubusercontent.com/burundtriogeeks/DKHW/refs/heads/main/cp/php-fpm/script.php"]
+                command: [ "curl", "-o", "/app/script.php", "https://raw.githubusercontent.com/burundtriogeeks/DKHW/refs/heads/main/cp/php-work/script.php"]
