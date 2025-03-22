@@ -1,12 +1,13 @@
 <?php
 
     function curlToRabbit($url,$str,$type = "post") {
-
+        echo 5;
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, "http://".getenv("MY_RELEASE_RABBITMQ_SERVICE_HOST").":15672/".$url);
         curl_setopt($ch, CURLOPT_HEADER, 0);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         if ($str) {
+            echo 6;
             if($type == "post") {
                 echo 1;
                 curl_setopt($ch, CURLOPT_POST, true);
@@ -36,6 +37,7 @@
     }
 
     function sendMessage($str) {
+        echo 4;
         $res = curlToRabbit("api/exchanges/%2f/my.exchange.name/publish",'{"properties":{},"routing_key":"my.queue","payload":"'.$str.'","payload_encoding":"string"}');
         var_dump($res);;
     }
