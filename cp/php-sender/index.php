@@ -8,8 +8,10 @@
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         if ($str) {
             if($type == "post") {
+                echo 1;
                 curl_setopt($ch, CURLOPT_POST, true);
             } else {
+                echo 2;
                 curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $type);
             }
             curl_setopt($ch, CURLOPT_POSTFIELDS,$str);
@@ -34,11 +36,11 @@
     }
 
     function sendMessage($str) {
-        $res = curlToRabbit("/api/exchanges/%2f/my.exchange.name/publish",'{"properties":{},"routing_key":"my.queue","payload":"'.$str.'","payload_encoding":"string"}');
+        $res = curlToRabbit("api/exchanges/%2f/my.exchange.name/publish",'{"properties":{},"routing_key":"my.queue","payload":"'.$str.'","payload_encoding":"string"}');
         var_dump($res);;
     }
 
-    createQueue();
+    //createQueue();
     sendMessage("Some message from client");
 
     echo "Message sent to queue\n";
