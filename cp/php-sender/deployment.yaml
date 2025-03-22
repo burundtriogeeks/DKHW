@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: php-sender
+  namespace: my-cp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: php-sender-app
+  template:
+    metadata:
+      labels:
+        app: php-sender-app
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:latest
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - name: nginx-config
+              mountPath: /etc/nginx/conf.d/default.conf
+              subPath: default.conf
+        - name: php-sender-container
+          image: bitnami/php-fpm
+          env:
+            - name: RABBITMQ_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: my-release-rabbitmq
+                  key: rabbitmq-password
+          lifecycle:
+            postStart:
+              exec:
+                command: ["/bin/bash", "-c", "curl -o /var/www/html/index.php https://raw.githubusercontent.com/burundtriogeeks/DKHW/refs/heads/main/cp/php-sender/index.php"]
+      volumes:
+        - name: nginx-config
+          configMap:
+            name: nginx-config

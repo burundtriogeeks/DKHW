@@ -16,29 +16,36 @@ spec:
       containers:
         - name: php-work-container
           image: bitnami/php-fpm
-          readinessProbe:
-            exec:
-              command:
-                - php
-                - /app/script.php
-                - readiness
-            initialDelaySeconds: 5
-            periodSeconds: 5
-          livenessProbe:
-            exec:
-              command:
-                - php
-                - /app/script.php
-                - readiness
-            failureThreshold: 3
-            initialDelaySeconds: 5
-            periodSeconds: 5
+          env:
+            - name: RABBITMQ_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: my-release-rabbitmq
+                  key: rabbitmq-password
+          # readinessProbe:
+          #  exec:
+          #    command:
+          #      - php
+          #      - /app/script.php
+          #      - readiness
+          #  initialDelaySeconds: 5
+          #  periodSeconds: 5
+          # livenessProbe:
+          #  exec:
+          #    command:
+          #      - php
+          #      - /app/script.php
+          #      - readiness
+          #  failureThreshold: 3
+          #  initialDelaySeconds: 5
+          #  periodSeconds: 5
           resources:
             requests:
               cpu: "100m"
             limits:
               cpu: "400m"
-          lifecycle:
-            postStart:
-              exec:
-                command: [ "curl", "-o", "/app/script.php", "https://raw.githubusercontent.com/burundtriogeeks/DKHW/refs/heads/main/cp/php-work/script.php"]
+          # lifecycle:
+          #  postStart:
+          #    exec:
+          #      command: ["/bin/bash", "-c", "curl -o /app/script.php https://raw.githubusercontent.com/burundtriogeeks/DKHW/refs/heads/main/cp/php-work/script.php && php /app/script.php init"]
+
