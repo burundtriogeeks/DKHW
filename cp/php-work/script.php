@@ -87,7 +87,7 @@
         do {
             $msg = getMessageFromQueue();
             if (!$msg) {
-                sleep($speed*10);
+                usleep($speed*10000);
             } else {
                 $start = microtime(true);
                 do {
