@@ -33,7 +33,7 @@ spec:
           lifecycle:
             postStart:
               exec:
-                command: ["/bin/bash", "-c", "curl -o /var/www/html/index.php https://raw.githubusercontent.com/burundtriogeeks/DKHW/refs/heads/main/cp/php-sender/index.php"]
+                command: ["/bin/bash", "-c", "curl -o /app/index.php https://raw.githubusercontent.com/burundtriogeeks/DKHW/refs/heads/main/cp/php-sender/index.php"]
       volumes:
         - name: nginx-config
           configMap:
