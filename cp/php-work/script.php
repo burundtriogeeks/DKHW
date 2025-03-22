@@ -3,7 +3,7 @@
     const _WORKERS_COUNT = 5;
 
     $cmd = isset($argv,$argv[1])? $argv[1] : (isset($_GET["cmd"])? $_GET["cmd"] : "work" );
-    fwrite(STDOUT, date("[j M Y G:i:s]")." ".gethostname()." recived command ".$cmd."\n");
+    fwrite(STDOUT, date("[j M Y G:i:s]")." ".gethostname()." received command ".$cmd."\n");
 
     if ($cmd == "readiness") {
         $res = shell_exec("ps -ax | grep 'script.php wo'");
