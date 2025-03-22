@@ -5,15 +5,15 @@
     $cmd = isset($argv,$argv[1])? $argv[1] : (isset($_GET["cmd"])? $_GET["cmd"] : "work" );
     fwrite(STDOUT, date("[j M Y G:i:s]")." ".gethostname()." recived command ".$cmd."\n");
 
-    if ($cmd == "redines") {
+    if ($cmd == "readiness") {
         $res = shell_exec("ps -ax | grep 'script.php wo'");
         preg_match_all("/script.php.work/",$res,$res);
         $res = count($res[0]);
         if (!$res || $res < _WORKERS_COUNT) {
             header("HTTP/1.0 404 Not Found");
-            echo "NOT ready\n";
+            echo "NOT ready";
         } else {
-            echo "READY\n";
+            echo "0";
         }
         exit;
     }
