@@ -606,6 +606,7 @@ my-cp-php-worker-hpa   Deployment/my-cp-php-work   cpu: 7%/40%   1         5    
 
 Для моніторингу я використав [запущені](../hw11/README.md) раніше loki,fluentbit,prometheus,grafana
 
+
 ### Збір логів в loki
 ![loki](./monitoring_loki.png)
 
