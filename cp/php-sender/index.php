@@ -50,6 +50,14 @@
             echo "No messages in queue\n";
         }
     } else {
-        sendMessage("Some message from client");
-        echo "Message sent to queue\n";
+        if (isset($_GET["msgcnt"])) {
+            for ($i = 0; $i < $_GET["msgcnt"]; $i++) {
+                sendMessage("Some message from client");
+            }
+            echo $_GET["msgcnt"]." Messages sent to queue\n";
+        } else {
+            sendMessage("Some message from client");
+            echo "Message sent to queue\n";
+        }
+
     }
