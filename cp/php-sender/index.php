@@ -23,25 +23,32 @@
     function createQueue() {
         $res = curlToRabbit("api/queues/","");
         if ($res == "[]") {
-            $res = curlToRabbit("api/exchanges/%2f/my.exchange.name",'{"type":"fanout","durable":true}',"PUT");
-            $res = curlToRabbit("api/queues/%2f/my.queue",'{"durable":true,"arguments":{"x-dead-letter-exchange":"", "x-dead-letter-routing-key": "my.queue.dead-letter"}}',"PUT");
-            $res = curlToRabbit("api/bindings/%2f/e/my.exchange.name/q/my.queue",'{"routing_key":"my.queue","arguments":{}}');
-        } else {
-            return;
+            curlToRabbit("api/exchanges/%2f/my.exchange.name",'{"type":"fanout","durable":true}',"PUT");
+            curlToRabbit("api/queues/%2f/my.queue",'{"durable":true,"arguments":{"x-dead-letter-exchange":"", "x-dead-letter-routing-key": "my.queue.dead-letter"}}',"PUT");
+            curlToRabbit("api/bindings/%2f/e/my.exchange.name/q/my.queue",'{"routing_key":"my.queue","arguments":{}}');
         }
     }
 
     function getMessageFromQueue(){
-        return curlToRabbit("api/queues/%2f/my.queue/get",'{"count":1,"ackmode":"ack_requeue_false","encoding":"auto","truncate":50000}');
-
+        $res = curlToRabbit("api/queues/%2f/my.queue/get",'{"count":1,"ackmode":"ack_requeue_false","encoding":"auto","truncate":50000}');
+        if ($res == "[]") {
+            return false;
+        } else {
+            return $res;
+        }
     }
 
     function sendMessage($str) {
-        $res = curlToRabbit("api/exchanges/%2f/my.exchange.name/publish",'{"properties":{},"routing_key":"my.queue","payload":"'.$str.'","payload_encoding":"string"}');
+        curlToRabbit("api/exchanges/%2f/my.exchange.name/publish",'{"properties":{},"routing_key":"my.queue","payload":"'.$str.'","payload_encoding":"string"}');
     }
 
     if (isset($_GET["getmsg"])) {
-        print_r(getMessageFromQueue());
+        $msg = getMessageFromQueue();
+        if ($msg) {
+            print_r(getMessageFromQueue());
+        } else {
+            echo "No messages in queue\n";
+        }
     } else {
         sendMessage("Some message from client");
         echo "Message sent to queue\n";
