@@ -20,3 +20,16 @@ data:
             fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
         }
     }
+  www.conf: |
+    [www]
+    user = daemon
+    group = daemon
+    listen = 9000
+    pm = ondemand
+    pm.max_children = 5
+    pm.start_servers = 2
+    pm.min_spare_servers = 1
+    pm.max_spare_servers = 3
+    clear_env = no
+    include=/opt/bitnami/php/etc/environment.conf
+    include=/opt/bitnami/php/etc/common.conf

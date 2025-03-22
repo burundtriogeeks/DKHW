@@ -24,6 +24,10 @@ spec:
               subPath: default.conf
         - name: php-sender-container
           image: bitnami/php-fpm
+          volumeMounts:
+            - name: nginx-config
+              mountPath: /opt/bitnami/php/etc/php-fpm.d/www.conf
+              subPath: www.conf
           env:
             - name: RABBITMQ_PASSWORD
               valueFrom:
