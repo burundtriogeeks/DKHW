@@ -7,7 +7,7 @@
 
     function curlToRabbit($url,$str,$type = "post") {
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, "http://".getenv("MY_RELEASE_RABBITMQ_SERVICE_HOST").":15672/".$url);
+        curl_setopt($ch, CURLOPT_URL, "http://".getenv("RABBITMQ_HOST").":15672/".$url);
         curl_setopt($ch, CURLOPT_HEADER, 0);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         if ($str) {
