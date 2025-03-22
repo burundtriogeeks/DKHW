@@ -5,58 +5,48 @@
     $cmd = isset($argv,$argv[1])? $argv[1] : (isset($_GET["cmd"])? $_GET["cmd"] : "work" );
     fwrite(STDOUT, date("[j M Y G:i:s]")." ".gethostname()." received command ".$cmd."\n");
 
+    function curlToRabbit($url,$str,$type = "post") {
 
-
-
-echo "Ura\n";
-
-function curlToRabbit($url,$str,$type = "post") {
-
-    $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, "http://".getenv("MY_RELEASE_RABBITMQ_SERVICE_HOST").":15672/".$url);
-    curl_setopt($ch, CURLOPT_HEADER, 0);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-    if ($str) {
-        if($type == "post") {
-            curl_setopt($ch, CURLOPT_POST, true);
-        } else {
-            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $type);
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, "http://".getenv("MY_RELEASE_RABBITMQ_SERVICE_HOST").":15672/".$url);
+        curl_setopt($ch, CURLOPT_HEADER, 0);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        if ($str) {
+            if($type == "post") {
+                curl_setopt($ch, CURLOPT_POST, true);
+            } else {
+                curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $type);
+            }
+            curl_setopt($ch, CURLOPT_POSTFIELDS,$str);
         }
-        curl_setopt($ch, CURLOPT_POSTFIELDS,$str);
-    }
-    curl_setopt($ch, CURLOPT_USERPWD, "user:".getenv("RABBITMQ_PASSWORD"));
-    $res = curl_exec($ch);
+        curl_setopt($ch, CURLOPT_USERPWD, "user:".getenv("RABBITMQ_PASSWORD"));
+        $res = curl_exec($ch);
 
-    curl_close($ch);
-    return $res;
-}
-
-function createQueue() {
-    $res = curlToRabbit("api/queues/","");
-    if ($res == "[]") {
-        echo 1;
-        $res = curlToRabbit("api/exchanges/%2f/my.exchange.name",'{"type":"fanout","durable":true}',"PUT");
-        var_dump($res);
-        $res = curlToRabbit("api/queues/%2f/my.queue",'{"durable":true,"arguments":{"x-dead-letter-exchange":"", "x-dead-letter-routing-key": "my.queue.dead-letter"}}',"PUT");
-        var_dump($res);
-        $res = curlToRabbit("api/bindings/%2f/e/my.exchange.name/q/my.queue",'{"routing_key":"my.queue","arguments":{}}');
-        var_dump($res);
-    } else {
-        return;
+        curl_close($ch);
+        return $res;
     }
 
-}
+    function createQueue() {
+        $res = curlToRabbit("api/queues/","");
+        if ($res == "[]") {
+            echo 1;
+            $res = curlToRabbit("api/exchanges/%2f/my.exchange.name",'{"type":"fanout","durable":true}',"PUT");
+            var_dump($res);
+            $res = curlToRabbit("api/queues/%2f/my.queue",'{"durable":true,"arguments":{"x-dead-letter-exchange":"", "x-dead-letter-routing-key": "my.queue.dead-letter"}}',"PUT");
+            var_dump($res);
+            $res = curlToRabbit("api/bindings/%2f/e/my.exchange.name/q/my.queue",'{"routing_key":"my.queue","arguments":{}}');
+            var_dump($res);
+        } else {
+            return;
+        }
 
-function getMessageFromQueue(){
-    // curl -i -u user:lUtsGZbQdJLzRPRk -H "content-type:application/json" -X POST http://10.152.183.153:15672/api/queues/%2f/my.queue/get -d'{"count":1,"ackmode":"ack_requeue_false","encoding":"auto","truncate":50000}
+    }
 
-}
+    function getMessageFromQueue(){
 
-createQueue();
+        // curl -i -u user:lUtsGZbQdJLzRPRk -H "content-type:application/json" -X POST http://10.152.183.153:15672/api/queues/%2f/my.queue/get -d'{"count":1,"ackmode":"ack_requeue_false","encoding":"auto","truncate":50000}
 
-
-
-
+    }
 
     if ($cmd == "readiness") {
         $res = shell_exec("ps -ax | grep 'script.php wo'");
@@ -73,6 +63,7 @@ createQueue();
     }
 
     if ($cmd == "init") {
+        createQueue();
         for($i = 1; $i <= _WORKERS_COUNT; $i++) {
             shell_exec("php /app/script.php work ".($i*50)." > /dev/null 2>&1 &");
         }

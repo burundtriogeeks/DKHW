@@ -29,6 +29,10 @@
         } else {
             return;
         }
+    }
+
+    function getMessageFromQueue(){
+        return curlToRabbit("api/queues/%2f/my.queue/get",'{"count":1,"ackmode":"ack_requeue_false","encoding":"auto","truncate":50000}');
 
     }
 
@@ -36,7 +40,9 @@
         $res = curlToRabbit("api/exchanges/%2f/my.exchange.name/publish",'{"properties":{},"routing_key":"my.queue","payload":"'.$str.'","payload_encoding":"string"}');
     }
 
-    //createQueue();
-    sendMessage("Some message from client");
-
-    echo "Message sent to queue\n";
+    if (isset($_GET["getmsg"])) {
+        print_r(getMessageFromQueue());
+    } else {
+        sendMessage("Some message from client");
+        echo "Message sent to queue\n";
+    }
