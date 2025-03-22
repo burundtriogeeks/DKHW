@@ -64,7 +64,7 @@
     if ($cmd == "init") {
         createQueue();
         for($i = 1; $i <= _WORKERS_COUNT; $i++) {
-            shell_exec("php /app/script.php work ".($i*50)." > /dev/null 2>&1 &");
+            shell_exec("php /app/script.php work ".($i*25)." > /dev/null 2>&1 &");
         }
         exit;
     }
@@ -93,7 +93,7 @@
                 do {
                     md5(generateRandomString(64));
                     usleep($speed);
-                } while (microtime(true) - $start < 5);
+                } while (microtime(true) - $start < 10);
             }
         } while(true);
     }
