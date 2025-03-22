@@ -12,6 +12,7 @@
         if (!$res || $res < _WORKERS_COUNT) {
             header("HTTP/1.0 404 Not Found");
             echo "NOT ready";
+            exit(1);
         } else {
             echo "0";
         }

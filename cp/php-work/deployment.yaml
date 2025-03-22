@@ -30,6 +30,7 @@ spec:
                 - php
                 - /app/script.php
                 - readiness
+            failureThreshold: 3
             initialDelaySeconds: 5
             periodSeconds: 5
           resources:
