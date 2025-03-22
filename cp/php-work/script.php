@@ -93,7 +93,7 @@
                 do {
                     md5(generateRandomString(64));
                     usleep($speed);
-                } while (microtime(true) - $start < 1);
+                } while (microtime(true) - $start < 5);
             }
         } while(true);
     }
