@@ -16,6 +16,22 @@ spec:
       containers:
         - name: php-work-container
           image: bitnami/php-fpm
+          readinessProbe:
+            exec:
+              command:
+                - php
+                - /app/script.php
+                - readiness
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          livenessProbe:
+            exec:
+              command:
+                - php
+                - /app/script.php
+                - readiness
+            initialDelaySeconds: 5
+            periodSeconds: 5
           resources:
             requests:
               cpu: "100m"
