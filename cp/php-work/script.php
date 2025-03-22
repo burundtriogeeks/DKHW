@@ -6,7 +6,6 @@
     fwrite(STDOUT, date("[j M Y G:i:s]")." ".gethostname()." received command ".$cmd."\n");
 
     function curlToRabbit($url,$str,$type = "post") {
-
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, "http://".getenv("MY_RELEASE_RABBITMQ_SERVICE_HOST").":15672/".$url);
         curl_setopt($ch, CURLOPT_HEADER, 0);
@@ -29,23 +28,23 @@
     function createQueue() {
         $res = curlToRabbit("api/queues/","");
         if ($res == "[]") {
-            echo 1;
-            $res = curlToRabbit("api/exchanges/%2f/my.exchange.name",'{"type":"fanout","durable":true}',"PUT");
-            var_dump($res);
-            $res = curlToRabbit("api/queues/%2f/my.queue",'{"durable":true,"arguments":{"x-dead-letter-exchange":"", "x-dead-letter-routing-key": "my.queue.dead-letter"}}',"PUT");
-            var_dump($res);
-            $res = curlToRabbit("api/bindings/%2f/e/my.exchange.name/q/my.queue",'{"routing_key":"my.queue","arguments":{}}');
-            var_dump($res);
-        } else {
-            return;
+            curlToRabbit("api/exchanges/%2f/my.exchange.name",'{"type":"fanout","durable":true}',"PUT");
+            curlToRabbit("api/queues/%2f/my.queue",'{"durable":true,"arguments":{"x-dead-letter-exchange":"", "x-dead-letter-routing-key": "my.queue.dead-letter"}}',"PUT");
+            curlToRabbit("api/bindings/%2f/e/my.exchange.name/q/my.queue",'{"routing_key":"my.queue","arguments":{}}');
         }
-
     }
 
     function getMessageFromQueue(){
+        $res = curlToRabbit("api/queues/%2f/my.queue/get",'{"count":1,"ackmode":"ack_requeue_false","encoding":"auto","truncate":50000}');
+        if ($res == "[]") {
+            return false;
+        } else {
+            return $res;
+        }
+    }
 
-        // curl -i -u user:lUtsGZbQdJLzRPRk -H "content-type:application/json" -X POST http://10.152.183.153:15672/api/queues/%2f/my.queue/get -d'{"count":1,"ackmode":"ack_requeue_false","encoding":"auto","truncate":50000}
-
+    function sendMessage($str) {
+        curlToRabbit("api/exchanges/%2f/my.exchange.name/publish",'{"properties":{},"routing_key":"my.queue","payload":"'.$str.'","payload_encoding":"string"}');
     }
 
     if ($cmd == "readiness") {
@@ -84,8 +83,17 @@
 
     if ($cmd == "work") {
         $speed = isset($argv,$argv[2])? $argv[2] : 100;
+
         do {
-            md5(generateRandomString(64));
-            usleep($speed);
+            $msg = getMessageFromQueue();
+            if (!$msg) {
+                sleep($speed*10);
+            } else {
+                $start = microtime(true);
+                do {
+                    md5(generateRandomString(64));
+                    usleep($speed);
+                } while (microtime(true) - $start < 1);
+            }
         } while(true);
     }
