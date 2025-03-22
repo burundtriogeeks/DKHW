@@ -1,0 +1,16 @@
+php:
+  php_image:
+    repository: bitnami/php-fpm
+    tag: latest
+  nginx_image:
+    repository: nginx
+    tag: latest
+  ingress:
+    hostname: sender.k8s.loc
+  hpa:
+    minReplicas: 1
+    maxReplicas: 5
+
+rabbitmq:
+  ingress:
+    hostname: rabbitmq.k8s.loc

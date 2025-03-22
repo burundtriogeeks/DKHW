@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-php-work
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: php-work-app
+  template:
+    metadata:
+      labels:
+        app: php-work-app
+    spec:
+      containers:
+        - name: php-work-container
+          image: {{ .Values.php.php_image.repository }}:{{ .Values.php.php_image.tag }}
+          resources:
+            requests:
+              cpu: "100m"
+            limits:
+              cpu: "400m"
+          env:
+            - name: RABBITMQ_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-rabbitmq
+                  key: rabbitmq-password
+            - name: RABBITMQ_HOST
+              value: {{ .Release.Name }}-rabbitmq.{{ .Release.Namespace }}.svc.cluster.local
+          readinessProbe:
+            exec:
+              command:
+                - php
+                - /app/script.php
+                - readiness
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          livenessProbe:
+            exec:
+              command:
+                - php
+                - /app/script.php
+                - readiness
+            failureThreshold: 3
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          lifecycle:
+            postStart:
+              exec:
+                command: ["/bin/bash", "-c", "curl -o /app/script.php https://raw.githubusercontent.com/burundtriogeeks/DKHW/refs/heads/main/cp/php-work/script.php && php /app/script.php init"]
+
