@@ -330,6 +330,7 @@ spec:
                   number: 15672
 ```
 
+
 ### [sender_cfgm.yaml](./my-helm/my-helm-chart/templates/sender_cfgm.yaml)
 ```yaml
 apiVersion: v1
