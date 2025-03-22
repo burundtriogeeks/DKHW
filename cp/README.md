@@ -306,7 +306,7 @@ rabbitmq:
     hostname: rabbitmq.k8s.loc #хостнейм для доступу до панелі керуваня RabbitMQ 
 ```
 
-6. Зібрав усі створені раніше маніфести в папку [templates](./my-helm/my-helm-chart/templates/). Замінив маніфести з використання шаблонів хелм
+6. Зібрав усі створені раніше маніфести в папку [templates](./my-helm/my-helm-chart/templates). Замінив маніфести з використання шаблонів хелм
 ### [rabbitmq_ingress.yaml](./my-helm/my-helm-chart/templates/rabbitmq_ingress.yaml)
 ```yaml
 apiVersion: networking.k8s.io/v1
@@ -605,7 +605,6 @@ my-cp-php-worker-hpa   Deployment/my-cp-php-work   cpu: 7%/40%   1         5    
 ## Налаштування моніторингу
 
 Для моніторингу я використав [запущені](../hw11/README.md) раніше loki,fluentbit,prometheus,grafana
-
 
 ### Збір логів в loki
 ![loki](./monitoring_loki.png)
